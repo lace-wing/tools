@@ -3,7 +3,7 @@
 | [中文版](README-zh.md) |
 | - |
 
-This is a tool for converting retrospective plans from `csv` to `png`.
+This is a tool for converting retrospective plans from `.csv` to `.png`.
 
 ## Content
 
