@@ -173,6 +173,9 @@ Then let's open it with your favorite text editor, can be Notepad, TextEdit, VS 
     complex number,09-01#ok
     ```
 
+    For now, **only the first tag per cell is used**.
+    Undefined tags will also be ignored.
+
 ### CSV to PNG
 
 After writing your plans in a `.csv` file, you may want to export it as a colored picture for better readability and convenience.
@@ -269,7 +272,7 @@ If the path does not exist, the default theme will be used.
 
 For example, `./themes/fun.*` will match every `.json` file in `./themes/` which its name starts with `fun`.
 
-Its default value is `./`.
+Its default value is ``.
 
 ##### `theme_name`
 `theme_name` is name of the theme that will be used in picture generation.
@@ -355,3 +358,42 @@ To add a tag, you only need a new element under `tags` in the theme.
 - [example CSV](example-plan.csv)
 - [example custom theme](example-theme.json)
 - [example PNG](example-plan.csv)
+- example shell outputs
+    
+    ```
+    tools/retro-planner% python csv2png.py
+    [Info] Reading the theme file example-theme.json...
+    [Info] Using "funky" in example-theme.json...
+    [Info] Reading example-plan.csv...
+    [Info] Converting example-plan.csv...
+    [Info] Saving example-plan.csv into a picture...
+    [Info] Finished conversion, output to ./.
+    ```
+
+    ```
+    tools/retro-planner% python csv2png.py
+    [Warning] Configuration file retro.conf.json not found, using the default configuration...
+    To use a custom configuration, put "retro.conf.json" in the same directory as this script.
+
+    Enter name/regex of the .csv file(s) without ".csv": example-.*
+    [Info] No theme specified, using the default theme...
+    [Info] Reading example-plan.csv...
+    [Info] Converting example-plan.csv...
+    [Info] Saving example-plan.csv into a picture...
+    [Info] Finished conversion, output to ./.
+    ```
+
+    ```
+    tools/retro-planner% python csv2png.py
+    [Error] Output directory ./out does not exist!
+    ```
+
+    ```
+    tools/retro-planner% python csv2png.py
+    [Info] Reading the theme file example-theme.json...
+    [Warning] Theme "mr.nothing" not found! Falling back to default theme...
+    [Info] Reading example-plan.csv...
+    [Info] Converting example-plan.csv...
+    [Info] Saving example-plan.csv into a picture...
+    [Info] Finished conversion, output to ./.
+    ```

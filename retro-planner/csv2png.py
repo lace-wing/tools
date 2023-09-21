@@ -67,8 +67,8 @@ FALLBACK_THEME = {
 
 config_data = {}
 theme_name: str = ''
-theme_path: str = './'
-input_path: str = './'
+theme_path: str = ''
+input_path: str = ''
 output_dir: str = './'
 
 theme: dict = {}
