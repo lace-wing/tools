@@ -1,6 +1,6 @@
 {
-	"theme_path": "./theme",
+	"theme_path": "example-theme",
 	"theme_name": "funky",
-	"input_path": "sch.*",
+	"input_path": "example-plan",
 	"output_dir": "./"
 }

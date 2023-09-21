@@ -1,0 +1,29 @@
+{
+	"funky": {
+		"fore": "#E6DAA6",
+		"back": "#808080",
+		"edge": "#929591",
+		"subject": {
+			"back": "#01153E"
+		},
+		"tags": {
+			"good": {
+				"back": "#029386"
+			},
+			"ok": {
+				"back": "#A9561E"
+			},
+			"bad": {
+				"back": "#EF4026"
+			},
+			"dead": {
+				"fore": "#3D1C02",
+				"back": "#E6DAA6"
+			},
+			"hey": {
+				"back": "white",
+				"fore": "black"
+			}
+		}
+	}
+}

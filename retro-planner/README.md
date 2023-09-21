@@ -1,12 +1,36 @@
 # Retrospective Planner
 
+| [中文版](README-zh.md) |
+| - |
+
 This is a tool for converting retrospective plans from `csv` to `png`.
+
+## Content
+
+- [Background](#background)
+
+    - [Retrospective Planning](#retrospective-planning)
+    - [CSV](#csv)
+    - [JSON](#json)
+    - [Regular Expression](#regular-expression)
+
+- [Prerequisites](#prerequisites)
+
+- [Usage](#usage)
+
+    - [Making A CSV File](#making-a-csv-file)
+    - [CSV Basics](#csv-basics)
+    - [CSV To PNG](#csv-to-png)
+    - [Configuration](#configuration)
+    - [Themes](#themes)
+
+- [Examples](#examples)
 
 ## Background
 
 ### Retrospective Planning
 
-Retrospective planning is the opposite way of prospective planning.
+[Retrospective planning](https://www.youtube.com/watch?v=b7o09a7t4RA) is the opposite way of prospective planning.
 In prospective planning, future events are pre-defined according to timeline and final goals.
 The tasks are pretty organized and managed, users can clearly see their next step.
 This planner is useful in daily routines.
@@ -52,7 +76,7 @@ As some people (I) would like to do it in a simple, extendable way without help 
 
 ### CSV
 
-`CSV` stands for [C]omma-[s]eparated [v]alues.
+CSV stands for **C**omma-**S**eparated **V**alues.
 Texts between commas are treated as a value, or a `cell` like what you see in Excel.
 
 Writing in `csv` files is very simple, take a look at the following example:
@@ -64,18 +88,35 @@ complex number,i,e,theta
 
 That's it, comma-separated values!
 
+### JSON
+
+[JSON](https://www.w3schools.com/whatis/whatis_json.asp) stands for **J**ava**S**cript **O**bject **N**otation.
+It is a file format which its content should be easy to understand.
+
+This script uses JSON as the format of its configuration and theme files.
+
+**Note that JSON has a strict grammar, be careful while editing it.**
+
+### Regular Expression
+
+[Regular expression (regex)](https://en.wikipedia.org/wiki/Regular_expression) is a powerful tool for 'find and/or replace' tasks.
+
+This script uses regex for matching input and theme files.
+
+**Note that regex has a strict grammar, be careful while editing it.**
+
 ## Prerequisites
 
-- python (tested on latest stable version)
+- [python](https://www.python.org) (tested on latest stable version)
 
     Python is a programming language, which this tool is written in.
-    To install python, download the latest release from its websites and follow its instructions.
+    To install python, download the latest release from [its website](https://www.python.org/downloads/) and follow its instructions.
     Alternatively, you can install it through your preferred package manager:
 
     - macOS
 
         `brew install python`
-        (requires `homebrew`)
+        (requires [homebrew](https://brew.sh))
     
     - Windows
 
@@ -85,7 +126,7 @@ That's it, comma-separated values!
 
         Use respective package manager.
 
-- matplotlib
+- [matplotlib](https://matplotlib.org)
 
     This is a package for plotting in python.
     To install, run
@@ -93,6 +134,13 @@ That's it, comma-separated values!
     `pip install matplotlib`
 
 ## Usage
+
+### Making A CSV File
+
+Create a new `.csv` file in your way.
+Maybe call it `plans.csv`?
+
+Then let's open it with your favorite text editor, can be Notepad, TextEdit, VS Code, Vim or anything that can edit text!
 
 ### CSV Basics
 
@@ -127,9 +175,12 @@ That's it, comma-separated values!
 
 ### CSV to PNG
 
-After writting your plans in a `.csv` file, you may want to export it as a colored picture for better readability and convenience.
+After writing your plans in a `.csv` file, you may want to export it as a colored picture for better readability and convenience.
 
-1. place the `.csv` file and the `csv2png.py` script in the same folder
+In this case, [this script](csv2png.py) is needed for the conversion.
+Download it to your computer.
+
+1. place the `.csv` file and the `csv2png.py` script in the same folder, in this tutorial it's `the_folder`
 
     ```
     the_folder/
@@ -137,7 +188,7 @@ After writting your plans in a `.csv` file, you may want to export it as a color
     |--- csv2png.py
     ```
 
-2. open your terminal emulator, `cd` to `the_folder`
+2. open your terminal emulator (bash, cmd, pwsh, zsh...), `cd` to `the_folder`
 
     ```sh
     cd path/to/the_folder
@@ -159,10 +210,7 @@ After writting your plans in a `.csv` file, you may want to export it as a color
     
     2. wait till conversion is complete
 
-        The script should prompt something like
-        ```
-        Conversion completed...
-        ```
+        You will see logs prompted to the terminal.
 
     3. there should be a `.png` file with the same name as your `.csv` file
 
@@ -201,7 +249,7 @@ With this item set to a proper value, typing filename is not needed while runnin
 
 Its default value is an empty string, which you have to specify.
 
-**Note that the filename section of this path is treated as a regular expression pattern, and does not need the `\.csv$` pattern.**
+**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.csv$` pattern.**
 
 For example, `plan.*` will match every `.csv` file in `./in/` which its name starts with `plan`.
 
@@ -217,7 +265,7 @@ Its default value is `./`.
 `theme_path` means path to the theme file(s).
 If the path does not exist, the default theme will be used.
 
-**Note that the filename section of this path is treated as a regular expression pattern, and does not need the `\.json$` pattern.**
+**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.json$` pattern.**
 
 For example, `./themes/fun.*` will match every `.json` file in `./themes/` which its name starts with `fun`.
 
@@ -300,3 +348,10 @@ As you may have noticed, there is a `hey` tag in the theme code above.
 
 That simple!
 To add a tag, you only need a new element under `tags` in the theme.
+
+## Examples
+
+- [example configuration](retro.conf.json)
+- [example CSV](example-plan.csv)
+- [example custom theme](example-theme.json)
+- [example PNG](example-plan.csv)
