@@ -1,3 +1,4 @@
+from io import TextIOWrapper
 import os
 from os.path import isfile
 import re
@@ -7,12 +8,11 @@ import matplotlib.pyplot as plt
 from matplotlib.typing import ColorType
 
 CONFIG_FILE = 'retro.conf.json'
-THEME_FILE: str = 'theme.json'
 
 CONFIG_ITEMS: list[str] = [
     'theme_path',
     'theme_name',
-    'input_file',
+    'input_path',
     'output_dir'
 ]
 CELL_COLOR_KEYS: list[str] = [
@@ -68,12 +68,14 @@ FALLBACK_THEME = {
 config_data = {}
 theme_name: str = ''
 theme_path: str = './'
-input_file: str = ''
+input_path: str = './'
 output_dir: str = './'
 
+theme: dict = {}
+theme_data: dict = {}
+theme_files: list[str] = []
 input_dir: str = ''
 input_list: list[str] = []
-input_index: int = 0
 theme_data = FALLBACK_THEME
 subjects: dict[str, list[str]] = {}
 subject: list[str] = []
@@ -82,6 +84,49 @@ rowlabels = []
 celltexts = []
 length: int = 1
 height = 1
+
+def info(text: str) -> None:
+    print(f"[Info] {text}")
+
+def warning(text: str) -> None:
+    print(f"[Warning] {text}")
+
+def error(text: str) -> None:
+    print(f"[Error] {text}")
+
+def checkJSON(file: TextIOWrapper, filename: str) -> dict:
+    ve: ValueError | None = None
+    data = {}
+    try:
+        data = json.load(file)
+    except ValueError as e:
+        ve = e
+    finally:
+        if ve != None:
+            error(f"File {filename} has invalid JSON, conversion aborted.\nPlease see the following message to identify the error:\n{ve}")
+            quit()
+        return data
+
+def getFiles(path:str, suf:str) -> list[str]:
+    dir, file = os.path.split(path)
+    files: list[str] = []
+    if dir != '':
+        if not os.path.exists(dir):
+            error(f"Path {dir} does not exist!")
+            quit()
+        if isfile(dir):
+            error(f"{dir} is a file, not a directory!")
+            quit()
+    else:
+        dir = './'
+
+    for filename in os.listdir(dir):
+        matched = re.match(rf"{file}\.{suf}$", filename)
+        if matched != None:
+            files.append(os.path.join(input_dir, matched.string))
+
+    return files
+
 
 def toCellColors(theme: dict) -> dict[str, ColorType]:
     colors: dict[str, ColorType] = {}
@@ -120,77 +165,62 @@ def getCellTags(row: int, col: int) -> list[str]:
 
 if os.path.exists(CONFIG_FILE):
     with open(CONFIG_FILE) as config_json:
-        config_data: dict = json.load(config_json)
+        config_data:dict = checkJSON(config_json, CONFIG_FILE)
         for item in CONFIG_ITEMS:
             if config_data.__contains__(item):
                 globals()[item] = config_data[item]
 else:
-    print(f"[Warning] Configuration file {CONFIG_FILE} not found, using the default configuration...\n"
+    warning(f"Configuration file {CONFIG_FILE} not found, using the default configuration...\n"
           + f"To use a custom configuration, put \"{CONFIG_FILE}\" in the same directory as this script."
     )
 
 # get input file(s)
 
-if input_file == '':
-    input_file = input('\nEnter name/regex of the .csv file(s) without \".csv\": ')
+if input_path == '':
+    input_path = input('\nEnter name/regex of the .csv file(s) without \".csv\": ')
 
-input_dir, input_file = os.path.split(input_file)
-
-if input_dir != '':
-    if not os.path.exists(input_dir):
-        print(f"[Error] Path {input_dir} does not exist!")
-        quit()
-
-    if isfile(input_dir):
-        print(f"[Error] {input_dir} is a file, not a directory!")
-        quit()
-else:
-    input_dir = './'
-
-for filename in os.listdir(input_dir):
-    matched = re.match(input_file + r"\.csv$", filename)
-    if matched != None:
-        input_list.append(os.path.join(input_dir, matched.string))
+input_list = getFiles(input_path, 'csv')
 
 file_num = input_list.__len__()
 if file_num < 1:
-    print(f"[Error] No .csv file under {input_dir} matches {input_file}\\.csv$, no file to convert!")
+    error(f"No .csv file under {input_dir} matches {input_path}\\.csv$, no file to convert!")
     quit()
-elif input_list.__len__() > 256:
-    print(f"[Warning] There are {file_num} files to convert, which might be too many.")
+elif file_num > 256:
+    warning(f"There are {file_num} files to convert, which might be too many.")
     choice = input("Continue? <[y]es|[N]o>: ")
     if not choice.lower() == 'y':
-        print("[Info] Aborted conversion.\nYou may want to specify fewer files to convert.")
+        info("Aborted conversion.\nYou may want to specify fewer files to convert.")
         quit()
 
 # check output dir
 
 if not os.path.exists(output_dir):
-    print(f"[Error] Output directory {output_dir} does not exist!")
+    error(f"Output directory {output_dir} does not exist!")
     quit()
 
 # get theme
 
-theme = FALLBACK_THEME
-theme_path = os.path.join(theme_path, THEME_FILE)
 if theme_name != '':
-    if os.path.exists(theme_path):
-        print(f"[Info] Reading the theme file {theme_path}...")
-        with open(theme_path) as theme_json:
-            theme_data = json.load(theme_json)
-    else:
-        print(f"[Warning] Theme path {theme_path} does not exist! Falling back to the default theme...")
-    if theme_data.__contains__(theme_name):
-        theme = theme_data[theme_name]
-    else:
-        print(f"[Warning] Theme \"{theme_name}\" not found! Falling back to the default theme...")
+    theme_files = getFiles(theme_path, 'json')
+    for filename in theme_files:
+        info(f"Reading the theme file {filename}...")
+        with open(filename) as theme_json:
+            theme_data = checkJSON(theme_json, os.path.join(theme_path, filename))
+            if theme_data.__contains__(theme_name):
+                theme = theme_data[theme_name]
+                info(f"Using \"{theme_name}\" in {filename}...")
+                break
+    if theme == {}:
+        theme = FALLBACK_THEME
+        warning(f"Theme \"{theme_name}\" not found! Falling back to default theme...")
 else:
-    print("[Info] No theme specified, using the default theme...")
+    theme = FALLBACK_THEME
+    info("No theme specified, using the default theme...")
 
 # start converting
 
 for filename in input_list:
-    print(f"[Info] Reading {filename}...")
+    info(f"Reading {filename}...")
     with open(filename) as file:
         sc = csv.reader(file)
         for row in sc:
@@ -202,7 +232,11 @@ for filename in input_list:
                 row[i] = row[i].strip()
             subjects[row[0]] = row[1:]
 
-    print(f"[Info] Converting {filename}...")
+    if subjects.__len__() < 1:
+        warning(f"{filename} has nothing to convert!")
+        continue
+
+    info(f"Converting {filename}...")
 
     for row in subjects:
         row_and_tag = str(row).split('#')
@@ -251,7 +285,7 @@ for filename in input_list:
 
     fig.tight_layout()
 
-    print(f"[Info] Saving {filename} into a picture...")
+    info(f"Saving {filename} into a picture...")
     plt.savefig(f"{os.path.join(output_dir, filename.removesuffix('.csv'))}.png", dpi=256)
 
-print(f"[Info] Finished conversion, output to {output_dir}.")
+info(f"Finished conversion, output to {output_dir}.")

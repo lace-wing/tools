@@ -116,6 +116,8 @@ That's it, comma-separated values!
     complex number,09-01
     ```
 
+    **Note that a subject without any following cell will be ignored in conversion.**
+
 3. base on the working/learning outcome, tag the `date` cell as `#good`, `#ok` or `#bad`
 
     ```csv
@@ -186,22 +188,24 @@ To customize themes, see section [themes](#themes).
 
 ```json
 {
-    "input_file": "./in/plan.*",
+    "input_path": "./in/plan.*",
     "output_dir": "./out/",
-    "theme_path": "./theme/theme.json",
+    "theme_path": "./themes/fun.*",
     "theme_name": "funky"
 }
 ```
 
-`input_file` is name or regex pattern of the input file(s).
+##### `input_path`
+`input_path` is path to the input file(s).
 With this item set to a proper value, typing filename is not needed while running the script.
 
 Its default value is an empty string, which you have to specify.
 
-**Note that value of this item is treated as a regular expression pattern, and does not need the `\.csv` pattern.**
+**Note that the filename section of this path is treated as a regular expression pattern, and does not need the `\.csv$` pattern.**
 
 For example, `plan.*` will match every `.csv` file in `./in/` which its name starts with `plan`.
 
+##### `output_dir`
 `output_dir` decides the directory/folder which pictures will be output to.
 If its set to `./out/`, output pictures will be placed in `./out/`.
 
@@ -209,11 +213,17 @@ Its default value is `./`.
 
 **Note that the script does not generate non-existing paths, so make sure the directory actually exists.**
 
-`theme_path` means path to the `theme.json` file.
+##### `theme_path`
+`theme_path` means path to the theme file(s).
 If the path does not exist, the default theme will be used.
+
+**Note that the filename section of this path is treated as a regular expression pattern, and does not need the `\.json$` pattern.**
+
+For example, `./themes/fun.*` will match every `.json` file in `./themes/` which its name starts with `fun`.
 
 Its default value is `./`.
 
+##### `theme_name`
 `theme_name` is name of the theme that will be used in picture generation.
 If the theme does not exist or the theme name is not set, the default theme will be used.
 

@@ -1,0 +1,6 @@
+{
+	"theme_path": "./theme",
+	"theme_name": "funky",
+	"input_path": "sch.*",
+	"output_dir": "./"
+}
