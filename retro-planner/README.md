@@ -232,7 +232,7 @@ To customize themes, see section [themes](#themes).
 
 #### Making A Config File
 
-1. create a `.json` file named as `retro.config.json`
+1. create a JSON file named as `retro.conf.json`
 2. place it in the same folder as the script
 
 #### Adding Config Items
