@@ -224,6 +224,8 @@ Download it to your computer.
         |--- plans.png
         ```
 
+	![](default-theme.png)
+
 ### Configuration
 
 The script allows you to configure how the input file(s) and the output file(s) are located, as well as path to the theme file and which theme to use.
@@ -252,9 +254,9 @@ With this item set to a proper value, typing filename is not needed while runnin
 
 Its default value is an empty string, which you have to specify.
 
-**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.csv$` pattern.**
+**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need to match the `.csv` suffix.**
 
-For example, `plan.*` will match every `.csv` file in `./in/` which its name starts with `plan`.
+For example, `./in/plan.*` will match every `.csv` file in `./in/` which its name starts with `plan`.
 
 ##### `output_dir`
 `output_dir` decides the directory/folder which pictures will be output to.
@@ -268,11 +270,11 @@ Its default value is `./`.
 `theme_path` means path to the theme file(s).
 If the path does not exist, the default theme will be used.
 
-**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.json$` pattern.**
+**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `.json` suffix.**
 
 For example, `./themes/fun.*` will match every `.json` file in `./themes/` which its name starts with `fun`.
 
-Its default value is ``.
+Its default value is an empty string, which you have to specify.
 
 ##### `theme_name`
 `theme_name` is name of the theme that will be used in picture generation.
@@ -282,16 +284,12 @@ Its default value is an empty string, which represents no theme chosen.
 
 ### Themes
 
-Themes define colors (possibly dimensions in the future) of cells and texts in the output pictures.
-
-#### Default Theme
-
-If no theme is specified or the specified theme does not exist, the default theme will be used.
+Themes define colors (possibly more in the future) of cells and texts in the output pictures.
 
 #### Making A Theme File
 
-1. create a `.json` file named as `theme.json`
-2. place it at `theme_path`, which by default is `./`
+1. create a `.json` file
+2. place it at [`theme_path`](#theme_path)
 
 #### Adding A Theme
 
@@ -329,9 +327,7 @@ If no theme is specified or the specified theme does not exist, the default them
 
 At the first level, name of the theme is stated (`funky`).
 
-It has three main elements, `fore` for foreground (texts), `back` for background and `edge` for edge lines of the cell.
-
-**These three values must be set, otherwise the script won't work.**
+It has three main elements, `fore` for foreground (texts) color, `back` for background color and `edge` for edge line color of the cells.
 
 Other than the main elements, there are optional elements `subject` and `tags`.
 

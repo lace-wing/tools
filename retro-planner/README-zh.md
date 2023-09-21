@@ -224,6 +224,8 @@ CSV 指 **C**omma-**S**eparated **V**alues。
         |--- plans.png
         ```
 
+	![](default-theme.png)
+
 ### 配置
 
 此脚本允许你配置输入、输出和主题文件的路径，以及所使用的主题。
@@ -233,9 +235,9 @@ CSV 指 **C**omma-**S**eparated **V**alues。
 #### 创建配置文件
 
 1. 新建一个叫做 `retro.conf.json` 的 JSON 文件
-2. place it in the same folder as the script
+2. 把它放在此脚本所在的文件夹中
 
-#### Adding Config Items
+#### 添加配置条目
 
 ```json
 {
@@ -247,53 +249,49 @@ CSV 指 **C**omma-**S**eparated **V**alues。
 ```
 
 ##### `input_path`
-`input_path` is path to the input file(s).
-With this item set to a proper value, typing filename is not needed while running the script.
+`input_path` 是输入文件的路径。
+如果设置成合适的路径，运行脚本时就无需输入文件名了。
 
-Its default value is an empty string, which you have to specify.
+默认值为空文本，需要你填写。
 
-**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.csv$` pattern.**
+**请注意，此路径中的文件名部分被视为正则表达式，且不需要匹配 `.csv` 后缀。**
 
-For example, `plan.*` will match every `.csv` file in `./in/` which its name starts with `plan`.
+比如，`./in/plan.*` 会匹配 `./in/` 文件夹中所有名字开头为 `plan` 的 `.csv` 文件。
 
 ##### `output_dir`
-`output_dir` decides the directory/folder which pictures will be output to.
-If its set to `./out/`, output pictures will be placed in `./out/`.
+`output_dir` 决定图片输出的位置。
+如果设为 `./out/`，图片则会输出到 `./out/`。
 
-Its default value is `./`.
+默认值为 `./`。
 
-**Note that the script does not generate non-existing paths, so make sure the directory actually exists.**
+**请注意，此脚本不会创建路径，请确保输入的路径真实存在。**
 
 ##### `theme_path`
-`theme_path` means path to the theme file(s).
-If the path does not exist, the default theme will be used.
+`theme_path` 是主题文件的路径。
+如果路径不存在，则会使用默认主题。
 
-**Note that the filename section of this path is treated as a [regular expression](https://regexr.com) pattern, and does not need the `\.json$` pattern.**
+**请注意，此路径中的文件名部分被视为正则表达式，且不需要匹配 `.json` 后缀。**
 
-For example, `./themes/fun.*` will match every `.json` file in `./themes/` which its name starts with `fun`.
+例如，`./themes/fun.*` 会匹配 `./themes/` 中所有名字开头为 `fun` 的 `.json` 文件。
 
-Its default value is ``.
+默认值为空文本，需要你填写。
 
 ##### `theme_name`
-`theme_name` is name of the theme that will be used in picture generation.
-If the theme does not exist or the theme name is not set, the default theme will be used.
+`theme_name` 是将要在图片生成中使用的主题的名称。
+如果主题不存在或名称未填写，则会使用默认主题。
 
-Its default value is an empty string, which represents no theme chosen.
+默认值为空文本，需要你填写。
 
-### Themes
+### 主题
 
-Themes define colors (possibly dimensions in the future) of cells and texts in the output pictures.
+主题定义了输出图片中文本和格子的颜色（将来可能加入更多）。
 
-#### Default Theme
+#### 创建一个主题文件
 
-If no theme is specified or the specified theme does not exist, the default theme will be used.
+1. 新建一个 `.json` 文件
+2. 将其放在 [`theme_path`](#theme_path)
 
-#### Making A Theme File
-
-1. create a `.json` file named as `theme.json`
-2. place it at `theme_path`, which by default is `./`
-
-#### Adding A Theme
+#### 添加一个主题
 
 ```json
 {
@@ -327,38 +325,36 @@ If no theme is specified or the specified theme does not exist, the default them
 }
 ```
 
-At the first level, name of the theme is stated (`funky`).
+JSON 的第一级写明了主题的名称（`funky`）
 
-It has three main elements, `fore` for foreground (texts), `back` for background and `edge` for edge lines of the cell.
+主题有三个主条目，前景（文本）颜色 `fore`，背景颜色 `back` 和边框颜色 `edge`。
 
-**These three values must be set, otherwise the script won't work.**
+除此之外，还有可选的条目 `subject` 和 `tags`。
 
-Other than the main elements, there are optional elements `subject` and `tags`.
+`subject` 是为第一列的项目配置的。
 
-`subject` is and is only for the first column.
+`tags` 包含了 `.csv` 文件中用 `#标签名称` 添加的标签。
 
-`tags` contains tags that can be used in the `.csv` files by appending `#tag_name` into a cell.
+每一个可选条目都可以设置 `fore`、`back` 或 `edge`。
+**可选条目没有设置的颜色会继承主条目的。**
 
-Each optional elements can have `fore`, `back` or `edge` set.
-**Main colors will be used if they are not specified for optional elements.**
+**颜色设置支持基础颜色名称（white、black、red、blue 等）和 16进制颜色代码。**
 
-**Basic color names (white, black, red, blue, etc.) and hex color code are supported.**
+#### 添加一个标签
 
-#### Adding A Tag
+也许你已经注意到，上面的主题代码中有一个原本不存在的标签 `hey`。
+`hey` 不是内置的标签，但它会正常生效，将文本改为黑色，背景改为白色。
 
-As you may have noticed, there is a `hey` tag in the theme code above.
-`hey` is not a built-in tag, but with this theme it works as expected, changing text color to black and background color to white.
+就这么简单！
+你只需要在 `tags` 下添加条目就能定义自己的标签了。
 
-That simple!
-To add a tag, you only need a new element under `tags` in the theme.
+## 示例
 
-## Examples
-
-- [example configuration](retro.conf.json)
-- [example CSV](example-plan.csv)
-- [example custom theme](example-theme.json)
-- [example PNG](example-plan.csv)
-- example shell outputs
+- [示例配置](retro.conf.json)
+- [示例 CSV](example-plan.csv)
+- [示例主题](example-theme.json)
+- [示例 PNG](example-plan.png)
+- 示例 shell 输出
     
     ```
     tools/retro-planner% python csv2png.py

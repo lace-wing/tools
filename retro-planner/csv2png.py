@@ -133,6 +133,9 @@ def toCellColors(theme: dict) -> dict[str, ColorType]:
     for name in CELL_COLOR_KEYS:
         if theme.__contains__(name):
             colors[name] = theme[name]
+        else:
+            colors[name] = globals()[f"FALLBACK_{name.upper()}"]
+            warning(f"{name} is not set by the current theme! Falling back to default color...")
     return colors
 
 def updateCellColors(colors: dict[str, ColorType], newtheme: dict) -> dict[str, ColorType]:
